@@ -2,3 +2,6 @@
 .specstory/.what-is-this.md
 .specstory/
 .cursorindexingignore
+
+# Node.js modules
+node_modules
