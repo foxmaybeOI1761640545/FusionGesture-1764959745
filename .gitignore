@@ -5,3 +5,6 @@
 
 # Node.js modules
 node_modules
+
+# Code exporter
+code_exporter/
