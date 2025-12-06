@@ -1,13 +1,5 @@
 import React from "react";
 
-/**
- * ControlPanel
- * props:
- * - intensity, onIntensityChange
- * - color, onColorChange
- * - effectType, onEffectTypeChange
- * - performanceMode, onPerformanceModeChange
- */
 const ControlPanel = ({
   intensity,
   onIntensityChange,
@@ -16,24 +8,25 @@ const ControlPanel = ({
   effectType,
   onEffectTypeChange,
   performanceMode,
-  onPerformanceModeChange
+  onPerformanceModeChange,
+  lang = "zh"
 }) => {
+  const isZh = lang === "zh";
+
   return (
     <div>
       {/* 粒子强度 */}
       <div className="control-group">
         <div className="control-label">
-          <span>Particle Intensity</span>
-          <span style={{ fontSize: 11, opacity: 0.7 }}>
-            {Math.round(intensity * 100)}%
-          </span>
+          <span>{isZh ? "粒子强度" : "Particle Intensity"}</span>
+          <span>{Math.round(intensity * 100)}%</span>
         </div>
         <div className="control-input-row">
           <input
             type="range"
-            min="0.2"
-            max="1"
-            step="0.05"
+            min={0.1}
+            max={1}
+            step={0.01}
             value={intensity}
             onChange={(e) => onIntensityChange(parseFloat(e.target.value))}
           />
@@ -43,8 +36,8 @@ const ControlPanel = ({
       {/* 粒子颜色 */}
       <div className="control-group">
         <div className="control-label">
-          <span>Particle Color</span>
-          <span style={{ fontSize: 11, opacity: 0.7 }}>Hue</span>
+          <span>{isZh ? "粒子颜色" : "Particle Color"}</span>
+          <span style={{ fontSize: 11, opacity: 0.8 }}>{color}</span>
         </div>
         <div className="control-input-row">
           <input
@@ -55,19 +48,28 @@ const ControlPanel = ({
         </div>
       </div>
 
-      {/* 效果类型 */}
+      {/* 粒子的基础效果选择 */}
       <div className="control-group">
         <div className="control-label">
-          <span>Effect Style</span>
+          <span>{isZh ? "基础效果" : "Base Effect"}</span>
         </div>
         <div className="control-input-row">
           <select
             value={effectType}
             onChange={(e) => onEffectTypeChange(e.target.value)}
           >
-            <option value="trail">Glowing Trail</option>
-            <option value="swirl">Swirling Cloud</option>
-            <option value="burst">Energy Burst</option>
+            <option value="pinkNova">
+              {isZh ? "粉色能量云（默认）" : "Pink Nova (default)"}
+            </option>
+            <option value="trail">
+              {isZh ? "拖尾轨迹" : "Glowing Trail"}
+            </option>
+            <option value="swirl">
+              {isZh ? "旋转云团" : "Swirling Cloud"}
+            </option>
+            <option value="burst">
+              {isZh ? "能量爆裂" : "Energy Burst"}
+            </option>
           </select>
         </div>
       </div>
@@ -75,34 +77,23 @@ const ControlPanel = ({
       {/* 性能模式 */}
       <div className="control-group">
         <div className="control-label">
-          <span>Performance Mode</span>
+          <span>{isZh ? "性能模式" : "Performance Mode"}</span>
         </div>
         <div className="control-input-row">
-          <button
-            className={
-              "toggle-button" + (performanceMode === "high" ? " active" : "")
-            }
-            onClick={() => onPerformanceModeChange("high")}
+          <select
+            value={performanceMode}
+            onChange={(e) => onPerformanceModeChange(e.target.value)}
           >
-            High
-          </button>
-          <button
-            className={
-              "toggle-button" +
-              (performanceMode === "balanced" ? " active" : "")
-            }
-            onClick={() => onPerformanceModeChange("balanced")}
-          >
-            Balanced
-          </button>
-          <button
-            className={
-              "toggle-button" + (performanceMode === "low" ? " active" : "")
-            }
-            onClick={() => onPerformanceModeChange("low")}
-          >
-            Low
-          </button>
+            <option value="high">
+              {isZh ? "高质量（更多粒子）" : "High (more particles)"}
+            </option>
+            <option value="balanced">
+              {isZh ? "平衡（推荐）" : "Balanced (recommended)"}
+            </option>
+            <option value="low">
+              {isZh ? "节能（更省电）" : "Low (battery saver)"}
+            </option>
+          </select>
         </div>
       </div>
     </div>

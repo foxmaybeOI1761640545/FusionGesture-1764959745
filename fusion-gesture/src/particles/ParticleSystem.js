@@ -6,7 +6,7 @@ import * as THREE from "three";
  * - 根据手势 + 目标位置（target）改变粒子运动方式
  *
  * 预设逻辑：
- * - open  : 使用用户选择的效果类型（trail/swirl/burst）
+ * - open  : 使用用户选择的效果类型（pinkNova/trail/swirl/burst）
  * - fist  : 强制使用 burst 预设，粒子更密集、能量感更强
  * - pinch : 使用 swirl 预设，偏向小范围旋转
  * - wave  : 主要为 trail，但附加轻微 swirl，形成“拖尾波纹”
@@ -36,14 +36,16 @@ class ParticleSystem {
     // 目标点（由手势 Hook 传入）
     this.target = new THREE.Vector3(0, 0, 0);
 
-    // 用户在 UI 中选择的效果类型
-    this.userEffectType = "trail";
+    // 用户在 UI 中选择的效果类型 —— 默认使用粉色新型模型 pinkNova
+    this.userEffectType = "pinkNova";
     // 当前真正生效的效果类型（会结合手势预设）
-    this.effectType = "trail";
+    this.effectType = "pinkNova";
 
     this.performanceMode = perf;
     this.intensity = intensity;
-    this.color = new THREE.Color(options.baseColor || "#4f46e5");
+
+    // 默认颜色改为粉色，如未传入 baseColor 则使用该颜色
+    this.color = new THREE.Color(options.baseColor || "#f472b6");
 
     /**
      * 根据手势调整的强度倍率（例如 fist > open）
@@ -75,6 +77,9 @@ class ParticleSystem {
 
     this.points = new THREE.Points(this.geometry, this.material);
     scene.add(this.points);
+
+    // 动画内部时间，用于某些特效（例如 pinkNova 轻微脉动）
+    this._time = 0;
 
     this._initParticles();
     this._applyGesturePreset("idle");
@@ -115,7 +120,7 @@ class ParticleSystem {
     switch (g) {
       case "open":
         // 用户自由选择主要效果
-        this.effectType = this.userEffectType || "trail";
+        this.effectType = this.userEffectType || "pinkNova";
         this.material.size = 0.032;
         this.material.opacity = 0.9;
         this.gestureIntensityMultiplier = 1.0;
@@ -143,8 +148,8 @@ class ParticleSystem {
         break;
       case "idle":
       default:
-        // 空闲：较弱的漂浮
-        this.effectType = this.userEffectType || "trail";
+        // 空闲：较弱的漂浮，仍然沿用用户选择的基础模型
+        this.effectType = this.userEffectType || "pinkNova";
         this.material.size = 0.03;
         this.material.opacity = 0.8;
         this.gestureIntensityMultiplier = 0.9;
@@ -231,30 +236,24 @@ class ParticleSystem {
   update(dt) {
     if (!dt) return;
 
+    this._time += dt;
+
     const drag = 0.9;
     const baseForce = 1.5 + this.intensity * 3.0;
     const swirlStrength = 1.5 + this.intensity * 2.5;
-    const burstStrength = 3.0 + this.intensity * 5.0;
-
-    const isTrail = this.effectType === "trail";
-    const isSwirl = this.effectType === "swirl";
-    const isBurst = this.effectType === "burst";
+    const burstStrength = 3.0 + this.intensity * 4.0;
 
     const gesture = this.currentGesture || "idle";
+    const gestureScale =
+      this.gestureIntensityMultiplier *
+      (0.6 + (this.intensity ?? 0.7) * 0.7);
 
-    // 手势强度倍率（握拳/挥手会更躁动）
-    let gestureScale = this.gestureIntensityMultiplier || 1.0;
-
-    const perfSkip =
-      this.performanceMode === "low"
-        ? 2
-        : this.performanceMode === "high"
-        ? 1
-        : 1.5;
+    const isPinkNova = this.effectType === "pinkNova";
+    const isTrail = this.effectType === "trail" || isPinkNova;
+    const isSwirl = this.effectType === "swirl" || isPinkNova;
+    const isBurst = this.effectType === "burst" || isPinkNova;
 
     for (let i = 0; i < this.count; i++) {
-      if (this.performanceMode === "low" && i % perfSkip !== 0) continue;
-
       const i3 = i * 3;
 
       let px = this.positions[i3];
@@ -267,8 +266,7 @@ class ParticleSystem {
 
       const dx = this.target.x - px;
       const dy = this.target.y - py;
-
-      const dist = Math.sqrt(dx * dx + dy * dy) + 0.0001;
+      const dist = Math.sqrt(dx * dx + dy * dy) + 1e-5;
       const dirX = dx / dist;
       const dirY = dy / dist;
 
@@ -276,16 +274,32 @@ class ParticleSystem {
       let fy = 0;
       let fz = 0;
 
-      // 基础吸引力（trail 模式最强）
+      // 轻微基础吸引，让粒子聚拢到 target 附近
+      {
+        const attraction =
+          baseForce * 0.35 * (0.7 + this.intensity * 0.8) * gestureScale;
+        fx += dirX * attraction * dt;
+        fy += dirY * attraction * dt;
+      }
+
+      // 拖尾效果（trail 模式 & pinkNova 也包含）
       if (isTrail) {
-        const force = baseForce * gestureScale;
-        fx += dirX * force * dt;
-        fy += dirY * force * dt;
+        const follow =
+          baseForce *
+          (gesture === "wave" ? 1.4 : 1.0) *
+          (0.4 + this.intensity * 0.6) *
+          gestureScale;
+        fx += dirX * follow * dt;
+        fy += dirY * follow * dt;
       }
 
       // 漩涡效果（swirl 模式 / wave 附加）
       if (isSwirl) {
         let swirl = swirlStrength * gestureScale;
+        // pinkNova 略微加强旋转感
+        if (isPinkNova) {
+          swirl *= 1.2;
+        }
         fx += -dirY * swirl * dt;
         fy += dirX * swirl * dt;
         const inward = 0.6 * baseForce * dt;
@@ -306,6 +320,13 @@ class ParticleSystem {
         fx += dirX * outward * dt;
         fy += dirY * outward * dt;
         fz += (Math.random() - 0.5) * outward * 0.2 * dt;
+      }
+
+      // pinkNova 在 Z 轴加入一点脉动抖动，让整体更有“能量云”感觉
+      if (isPinkNova) {
+        const pulse =
+          0.4 + 0.3 * Math.sin(this._time * 4.0 + i * 0.15);
+        fz += (Math.random() - 0.5) * pulse * 0.12;
       }
 
       // idle 时轻微随机漂浮
