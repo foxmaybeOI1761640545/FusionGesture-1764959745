@@ -3,6 +3,7 @@ import React from "react";
 /**
  * GestureVisualizer
  * - 显示当前手势、FPS、加载状态
+ * - 特别提示：左右挥手会触发 Wave 手势
  */
 const GestureVisualizer = ({ gesture, fps, ready, error }) => {
   const prettyGestureName = () => {
@@ -24,7 +25,10 @@ const GestureVisualizer = ({ gesture, fps, ready, error }) => {
   const statusText = () => {
     if (error) return error;
     if (!ready) return "正在加载手势识别模型...";
-    if (!gesture || gesture === "idle") return "请将手伸入摄像头范围。";
+    if (gesture === "wave") return "检测到左右挥手 Wave 手势！";
+    if (!gesture || gesture === "idle") {
+      return "请将手伸入摄像头范围，左右挥手可触发 Wave 效果。";
+    }
     return "已检测到手部动作。";
   };
 
@@ -37,9 +41,7 @@ const GestureVisualizer = ({ gesture, fps, ready, error }) => {
         </div>
       </div>
       <div className="hud-bottom">
-        <div className="hud-fps-pill">
-          FPS: {fps ? fps.toFixed(0) : "—"}
-        </div>
+        <div className="hud-fps-pill">FPS: {fps ? fps.toFixed(0) : "—"}</div>
       </div>
     </div>
   );

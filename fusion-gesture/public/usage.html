@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fusion Gesture 使用说明与规则</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(circle at top, #15192c 0, #050816 55%, #010106 100%);
+        color: #f9fafb;
+      }
+      .page {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 16px 48px;
+      }
+      h1 {
+        font-size: 26px;
+        margin-bottom: 8px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-top: 24px;
+        margin-bottom: 8px;
+      }
+      p {
+        font-size: 14px;
+        line-height: 1.7;
+        opacity: 0.9;
+      }
+      ul {
+        font-size: 14px;
+        line-height: 1.7;
+        padding-left: 20px;
+        opacity: 0.95;
+      }
+      a {
+        color: #38bdf8;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .card {
+        background: rgba(15, 23, 42, 0.95);
+        border-radius: 20px;
+        padding: 20px 18px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+        margin-top: 16px;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        margin-top: 4px;
+        opacity: 0.9;
+      }
+      .back-link {
+        margin-top: 24px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>Fusion Gesture 使用说明与规则</h1>
+      <div class="tag">WebGL · 手势交互 · 实验性体验</div>
+
+      <div class="card">
+        <h2>1. 基本使用方法</h2>
+        <ul>
+          <li>首次打开页面时，浏览器会请求访问摄像头的权限，请选择“允许”。</li>
+          <li>将手伸入左下角摄像头画面可见范围内，保持光线尽量均匀。</li>
+          <li>
+            目前支持的基础手势：
+            <ul>
+              <li>张开手掌（Open Hand）：发射拖尾粒子或你在右侧选择的效果。</li>
+              <li>握拳（Fist）：触发能量爆裂型粒子预设。</li>
+              <li>捏合（Pinch）：触发小范围旋转/聚集粒子预设。</li>
+              <li>左右挥手（Wave）：张开手掌并左右快速挥动，触发 Wave 拖尾波纹。</li>
+            </ul>
+          </li>
+          <li>
+            右侧控制面板可以调节 <strong>粒子强度</strong>、<strong>颜色</strong>、
+            <strong>基础效果类型</strong>
+            以及 <strong>性能模式</strong>。
+          </li>
+        </ul>
+
+        <h2>2. 隐私与数据说明</h2>
+        <ul>
+          <li>应用仅在本地浏览器中处理摄像头画面，不会主动上传到服务器。</li>
+          <li>本项目为演示/实验用途，不具备任何身份识别、监控或安全功能。</li>
+          <li>请在你信任的设备和网络环境下使用，并自行留意浏览器权限设置。</li>
+        </ul>
+
+        <h2>3. 适配与性能建议</h2>
+        <ul>
+          <li>推荐使用最新版 Chrome / Edge 浏览器访问。</li>
+          <li>对于性能较弱的设备，可以在右侧面板中选择 <strong>Low</strong> 模式。</li>
+          <li>当帧率（FPS）过低时，建议减小粒子强度或关闭其他占用 GPU 的程序。</li>
+        </ul>
+
+        <h2>4. 使用限制</h2>
+        <ul>
+          <li>本项目仅供学习、演示和娱乐使用，不适用于医疗、工业安全等高风险场景。</li>
+          <li>请避免在驾驶、操作机械等需要高度注意力的环境中使用本应用。</li>
+          <li>如果你在演示时录制屏幕或摄像头画面，请提前征得相关人员的同意。</li>
+        </ul>
+
+        <h2>5. 常见问题</h2>
+        <ul>
+          <li>看不到粒子？请检查浏览器是否允许访问摄像头，并保持手在摄像头范围内。</li>
+          <li>挥手无反应？确认是张开手掌，并左右幅度稍大、速度较快地挥动。</li>
+          <li>画面卡顿？尝试切换到 Low 性能模式，或减小粒子强度。</li>
+        </ul>
+      </div>
+
+      <div class="back-link">
+        返回体验页面：
+        <a href="/">回到 Fusion Gesture 主页面</a>
+      </div>
+    </div>
+  </body>
+</html>

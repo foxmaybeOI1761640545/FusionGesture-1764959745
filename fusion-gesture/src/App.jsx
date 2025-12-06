@@ -20,22 +20,35 @@ const App = () => {
   const {
     videoRef,
     gesture,
-    handPosition, // { xNorm, yNorm } 归一化坐标（0~1）
+    handPosition,
     landmarks,
     fps,
     ready,
     error
   } = useGestureDetector();
 
+  // 打开使用说明新页面
+  const openUsagePage = () => {
+    // 使用相对路径即可，由 webpack-dev-server 提供静态文件
+    window.open("/usage.html", "_blank");
+  };
+
   return (
     <div className="app-root">
       <header className="app-header">
         <div>
           <div className="app-title">Fusion Gesture</div>
-          <div className="app-subtitle">Real-time hand gestures + GPU particles</div>
+          <div className="app-subtitle">
+            Real-time hand gestures + GPU particles
+          </div>
         </div>
-        <div className="app-badge">
-          WebGL · Media-based Gesture · React
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="app-badge">
+            WebGL · Media-based Gesture · React
+          </div>
+          <button className="toggle-button" onClick={openUsagePage}>
+            使用说明
+          </button>
         </div>
       </header>
 
@@ -86,7 +99,8 @@ const App = () => {
               onPerformanceModeChange={setPerformanceMode}
             />
             <p className="hint-text">
-              提示：允许摄像头权限后，伸出手、握拳、挥动手掌，看看粒子如何跟随手势变化。
+              提示：允许摄像头权限后，伸出手、握拳、捏合、左右挥手等动作，
+              根据不同手势会自动切换不同粒子预设。
             </p>
           </div>
 
@@ -103,7 +117,9 @@ const App = () => {
               <span className="info-key">Hand X / Y</span>
               <span className="info-value">
                 {handPosition
-                  ? `${handPosition.xNorm.toFixed(2)} / ${handPosition.yNorm.toFixed(2)}`
+                  ? `${handPosition.xNorm.toFixed(2)} / ${handPosition.yNorm.toFixed(
+                      2
+                    )}`
                   : "—"}
               </span>
             </div>
