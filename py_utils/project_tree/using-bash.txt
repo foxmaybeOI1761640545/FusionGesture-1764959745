@@ -1,2 +1,5 @@
 cd H:\Users\栀子花\Desktop\play\FusionGesture\FusionGesture-1764959745\py_utils\project_tree
 python project_tree.py "H:\Users\栀子花\Desktop\play\FusionGesture\FusionGesture-1764959745\fusion-gesture" -i "H:\Users\栀子花\Desktop\play\FusionGesture\FusionGesture-1764959745\.gitignore"
+---
+cd H:\Users\栀子花\Desktop\play\FusionGesture\FusionGesture-1764959745\py_utils\project_tree
+pyinstaller project_tree.spec
